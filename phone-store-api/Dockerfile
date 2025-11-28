@@ -12,3 +12,5 @@ EXPOSE 4000
 
 # chạy theo script "start" trong package.json
 CMD ["npm", "start"]
+
+# dhfh
