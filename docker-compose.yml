@@ -1,0 +1,23 @@
+services:
+  backend:
+    build: ./phone-store-api
+    container_name: phone-store-backend
+    ports:
+      - "5000:4000"
+    env_file:
+      - ./phone-store-api/.env
+    restart: always
+
+  frontend:
+    build:
+      context: ./phone-store
+      args:
+        VITE_API_BASE: "http://localhost:5000/api"   # ✅ browser sẽ gọi URL này
+    container_name: phone-store-frontend
+    ports:
+      - "80:80"
+    restart: always
+
+networks:
+  default:
+    name: phone-store-network
