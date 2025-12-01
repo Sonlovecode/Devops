@@ -9,7 +9,7 @@ export default function Home({
   onViewProduct,
   onAddToCart,
 }) {
-  const { products: allProducts } = useProducts({}, '');
+  const { products: allProducts } = useProducts();
 
   // Lấy sản phẩm đầu tiên làm hero (nếu có)
   const heroProduct =
