@@ -1,21 +1,20 @@
+version: "3.8"
+
 services:
   backend:
-    build: ./phone-store-api
+    image: <caoleson04>/phone-store-api:latest   # 👈 SỬA tên user Docker Hub
     container_name: phone-store-backend
     ports:
-      - "5000:4000"
+      - "5000:4000"          # server:container → API public: http://SERVER_IP:5000
     env_file:
       - ./phone-store-api/.env
     restart: always
 
   frontend:
-    build:
-      context: ./phone-store
-      args:
-        VITE_API_BASE: "http://localhost:5000/api"   # ✅ browser sẽ gọi URL này
+    image: <caoleson04>/phone-store:latest       # 👈 SỬA tên user Docker Hub
     container_name: phone-store-frontend
     ports:
-      - "80:80"
+      - "80:80"              # Web: http://SERVER_IP/
     restart: always
 
 networks:
