@@ -7,6 +7,8 @@ export const useProducts = (filters = {}, searchText = '') => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    let isCancelled = false;
+
     const load = async () => {
       try {
         setLoading(true);
@@ -19,21 +21,27 @@ export const useProducts = (filters = {}, searchText = '') => {
           q: searchText || undefined,
         };
 
-        // LƯU Ý: chỉ '/products', KHÔNG phải '/api/products'
         const res = await apiGet('/products', params);
 
-        // backend đang trả kiểu { data: [...], pagination: {...} }
-        setProducts(res.data || []);
+        if (!isCancelled) {
+          // backend đang trả kiểu { data: [...], pagination: {...} }
+          setProducts(res.data || []);
+        }
       } catch (err) {
         console.error('useProducts error:', err);
-        setProducts([]);
+        if (!isCancelled) setProducts([]);
       } finally {
-        setLoading(false);
+        if (!isCancelled) setLoading(false);
       }
     };
 
     load();
-  }, [filters, searchText]);
+
+    return () => {
+      isCancelled = true;
+    };
+    // ✅ dùng JSON.stringify để so sánh nội dung filters, tránh vòng lặp vô hạn
+  }, [searchText, JSON.stringify(filters || {})]);
 
   return { products, loading };
 };

@@ -77,7 +77,8 @@ export default function Admin({
     if (!isAdmin) return;
     try {
       setIsLoadingProducts(true);
-      const res = await fetch(`${API_BASE}/products`, {
+      // ✅ THÊM /api
+      const res = await fetch(`${API_BASE}/api/products`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       const data = await res.json();
@@ -95,7 +96,8 @@ export default function Admin({
     if (!isAdmin || !token) return;
     try {
       setLoadingUsers(true);
-      const res = await fetch(`${API_BASE}/users`, {
+      // ✅ THÊM /api
+      const res = await fetch(`${API_BASE}/api/users`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -113,7 +115,8 @@ export default function Admin({
     if (!userId) return;
     try {
       setUpdatingUserId(userId);
-      const res = await fetch(`${API_BASE}/users/${userId}`, {
+      // ✅ THÊM /api
+      const res = await fetch(`${API_BASE}/api/users/${userId}`, {
         method: 'PATCH',
         headers: authHeaders,
         body: JSON.stringify(patch),
@@ -230,7 +233,7 @@ export default function Admin({
       if (editingProductId) {
         // UPDATE
         const res = await fetch(
-          `${API_BASE}/products/${editingProductId}`,
+          `${API_BASE}/api/products/${editingProductId}`,
           {
             method: 'PUT',
             headers: authHeaders,
@@ -244,7 +247,7 @@ export default function Admin({
         alert('Đã cập nhật sản phẩm');
       } else {
         // CREATE
-        const res = await fetch(`${API_BASE}/products`, {
+        const res = await fetch(`${API_BASE}/api/products`, {
           method: 'POST',
           headers: authHeaders,
           body: JSON.stringify(payload),
@@ -271,7 +274,7 @@ export default function Admin({
 
     try {
       setDeletingProductId(id);
-      const res = await fetch(`${API_BASE}/products/${id}`, {
+      const res = await fetch(`${API_BASE}/api/products/${id}`, {
         method: 'DELETE',
         headers: authHeaders,
       });
@@ -306,7 +309,7 @@ export default function Admin({
     try {
       setUpdatingOrderId(orderId);
       const res = await fetch(
-        `${API_BASE}/orders/${orderId}/status`,
+        `${API_BASE}/api/orders/${orderId}/status`,
         {
           method: 'PATCH',
           headers: authHeaders,
@@ -398,7 +401,10 @@ export default function Admin({
                     ? 'Sửa sản phẩm'
                     : 'Thêm sản phẩm mới (đơn giản)'}
                 </h4>
-                <form onSubmit={handleSubmitProduct} className="form-grid form-grid-cols2">
+                <form
+                  onSubmit={handleSubmitProduct}
+                  className="form-grid form-grid-cols2"
+                >
                   <div className="form-field">
                     <label>Tên sản phẩm</label>
                     <input
@@ -669,13 +675,17 @@ export default function Admin({
             </div>
           )}
 
-          {/* ===== TAB: USERS (placeholder) ===== */}
+          {/* ===== TAB: USERS ===== */}
           {adminTab === 'users' && (
             <div>
-              <h3 style={{ fontSize: 15 }}>Quản lý người dùng ({users.length})</h3>
+              <h3 style={{ fontSize: 15 }}>
+                Quản lý người dùng ({users.length})
+              </h3>
 
               {loadingUsers ? (
-                <p className="text-muted mt-2">Đang tải danh sách người dùng…</p>
+                <p className="text-muted mt-2">
+                  Đang tải danh sách người dùng…
+                </p>
               ) : users.length === 0 ? (
                 <p className="text-muted mt-2">Chưa có người dùng nào.</p>
               ) : (

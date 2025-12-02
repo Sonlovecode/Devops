@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { API_BASE } from '../utils/api';
+import { apiPost } from '../utils/api';
 
 export default function PaymentQR({ orderId, setPage }) {
   const [qrData, setQrData] = useState(null);
@@ -15,12 +15,7 @@ export default function PaymentQR({ orderId, setPage }) {
       return;
     }
 
-    fetch(`${API_BASE}/payment/qr`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ orderId }),
-    })
-      .then((res) => res.json())
+    apiPost('/payment/qr', { orderId })   // 🔥 chỉ '/payment/qr'
       .then((data) => {
         if (data.success) {
           setQrData(data);
@@ -37,12 +32,8 @@ export default function PaymentQR({ orderId, setPage }) {
 
   const handleConfirm = () => {
     setConfirming(true);
-    fetch(`${API_BASE}/payment/confirm`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ orderId }),
-    })
-      .then((res) => res.json())
+
+    apiPost('/payment/confirm', { orderId })    // 🔥 chỉ '/payment/confirm'
       .then((data) => {
         if (data.success) {
           alert('Đã xác nhận thanh toán! Cảm ơn quý khách.');

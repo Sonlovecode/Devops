@@ -83,7 +83,8 @@ export default function Profile() {
     try {
       setLoginLoading(true);
 
-      const res = await fetch(`${API_BASE}/auth/login`, {
+      // ✅ THÊM /api ở đây
+      const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -132,7 +133,8 @@ export default function Profile() {
     try {
       setRegLoading(true);
 
-      const res = await fetch(`${API_BASE}/auth/register`, {
+      // ✅ THÊM /api ở đây
+      const res = await fetch(`${API_BASE}/api/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -156,7 +158,6 @@ export default function Profile() {
 
       // clear form
       setRegPassword('');
-      // auto chuyển sang tab login (tuỳ m, hiện tao chỉ hiển thị message)
       setAuthMode('login');
       setLoginEmail(regEmail);
     } catch (err) {
@@ -177,7 +178,9 @@ export default function Profile() {
     const fetchOrders = async () => {
       try {
         setLoadingOrders(true);
-        const res = await fetch(`${API_BASE}/orders/my`, {
+
+        // ✅ THÊM /api ở đây
+        const res = await fetch(`${API_BASE}/api/orders/my`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

@@ -12,6 +12,7 @@ import PaymentQR from './components/PaymentQR';
 import Footer from './components/Footer';
 import Toast from './components/Toast';
 import { useLocalStorageState } from './hooks/useLocalStorageState';
+import { API_BASE } from './utils/api'; // ✅ dùng API_BASE cho fetch
 
 // ====== STORAGE KEYS (dùng với localStorage) ======
 const STORAGE_KEYS = {
@@ -35,7 +36,10 @@ export default function App() {
 
   // User & token đọc từ localStorage (Profile/Login sẽ set vào đây)
   const currentUser = JSON.parse(localStorage.getItem(STORAGE_KEYS.USER) || 'null');
-  const token = localStorage.getItem(STORAGE_KEYS.TOKEN) || localStorage.getItem('token') || null;
+  const token =
+    localStorage.getItem(STORAGE_KEYS.TOKEN) ||
+    localStorage.getItem('token') ||
+    null;
   const isAdmin = currentUser?.role === 'admin';
 
   const [searchText, setSearchText] = useState('');
@@ -49,7 +53,10 @@ export default function App() {
   });
 
   const [currentProductId, setCurrentProductId] = useState(null);
-  const [currentVariant, setCurrentVariant] = useState({ color: null, rom: null });
+  const [currentVariant, setCurrentVariant] = useState({
+    color: null,
+    rom: null,
+  });
 
   const [toastMessage, setToastMessage] = useState('');
 
@@ -87,7 +94,7 @@ export default function App() {
     if (type === 'gaming') newFilters.ram = '8';
     if (type === 'budget') newFilters.priceMax = '7000000'; // 7 triệu
     if (type === 'camera') {
-      // tuỳ m, có thể gắn tag sau; tạm thời dùng khoảng giá
+      // tạm thời dùng khoảng giá
       newFilters.priceMin = '7000000';
     }
 
@@ -142,7 +149,7 @@ export default function App() {
 
     // Trường hợp cũ: chỉ có productId -> không đủ data để tạo order đúng backend
     console.warn(
-      'addToCart được gọi với productId thuần. Hãy cập nhật ProductCard/ProductDetail để truyền payload đầy đủ.'
+      'addToCart được gọi với productId thuần. Hãy cập nhật ProductCard/ProductDetail để truyền payload đầy đủ.',
     );
     showToast('Không thể thêm vào giỏ vì thiếu thông tin sản phẩm');
   };
@@ -194,7 +201,7 @@ export default function App() {
       return;
     }
     showToast(
-      `Mã ${checkoutInfo.couponCode.trim().toUpperCase()} sẽ được kiểm tra khi đặt hàng`
+      `Mã ${checkoutInfo.couponCode.trim().toUpperCase()} sẽ được kiểm tra khi đặt hàng`,
     );
   };
 
@@ -233,7 +240,8 @@ export default function App() {
       headers.Authorization = `Bearer ${token}`;
     }
 
-    fetch('http://localhost:4000/api/orders', {
+    // ✅ dùng API_BASE + /api/orders (port 5000)
+    fetch(`${API_BASE}/api/orders`, {
       method: 'POST',
       headers,
       body: JSON.stringify(payload),
@@ -270,18 +278,19 @@ export default function App() {
   useEffect(() => {
     if (!isAdmin || page !== 'admin') return;
     if (!token) {
-      // showToast('Bạn cần đăng nhập admin để xem đơn hàng');
       return;
     }
 
-    fetch('http://localhost:4000/api/orders', {
+    // ✅ dùng API_BASE + /api/orders
+    fetch(`${API_BASE}/api/orders`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
       .then(async (res) => {
         const data = await res.json().catch(() => []);
-        if (!res.ok) throw new Error(data.message || 'Không load được đơn hàng');
+        if (!res.ok)
+          throw new Error(data.message || 'Không load được đơn hàng');
         setOrders(data);
       })
       .catch((err) => {
@@ -365,16 +374,15 @@ export default function App() {
             <PaymentQR orderId={orderId} setPage={setPage} />
           )}
 
-         {page === 'admin' && (
-  <Admin
-    adminTab={adminTab}
-    setAdminTab={setAdminTab}
-    orders={orders}
-    totalRevenue={totalRevenue}
-    setPage={setPage}
-  />
-)}
-
+          {page === 'admin' && (
+            <Admin
+              adminTab={adminTab}
+              setAdminTab={setAdminTab}
+              orders={orders}
+              totalRevenue={totalRevenue}
+              setPage={setPage}
+            />
+          )}
         </div>
       </main>
 
