@@ -1,22 +1,53 @@
+
+################ docker
 version: "3.8"
 
 services:
   backend:
-    image: <caoleson04>/phone-store-api:latest   # 👈 SỬA tên user Docker Hub
+    build: ./phone-store-api
     container_name: phone-store-backend
     ports:
-      - "5000:4000"          # server:container → API public: http://SERVER_IP:5000
+      - "5000:4000"          # host:container → API máy bạn là http://localhost:5000
     env_file:
       - ./phone-store-api/.env
     restart: always
 
   frontend:
-    image: <caoleson04>/phone-store:latest       # 👈 SỬA tên user Docker Hub
+    build:
+      context: ./phone-store
+      args:
+        # FE build-time env cho Vite, browser sẽ gọi API qua http://localhost:5000
+        VITE_API_BASE: "http://localhost:5000"
     container_name: phone-store-frontend
     ports:
-      - "80:80"              # Web: http://SERVER_IP/
+      - "80:80"              # mở web ở http://localhost
     restart: always
 
 networks:
   default:
     name: phone-store-network
+
+################# deployed version
+
+# version: "3.8"
+
+# services:
+#   backend:
+#     image: <caoleson04>/phone-store-api:latest   # 👈 SỬA tên user Docker Hub
+#     container_name: phone-store-backend
+#     ports:
+#       - "5000:4000"          # server:container → API public: http://SERVER_IP:5000
+#     env_file:
+#       - ./phone-store-api/.env
+#     restart: always
+
+#   frontend:
+#     image: <caoleson04>/phone-store:latest       # 👈 SỬA tên user Docker Hub
+#     container_name: phone-store-frontend
+#     ports:
+#       - "80:80"              # Web: http://SERVER_IP/
+#     restart: always
+
+# networks:
+#   default:
+#     name: phone-store-network
